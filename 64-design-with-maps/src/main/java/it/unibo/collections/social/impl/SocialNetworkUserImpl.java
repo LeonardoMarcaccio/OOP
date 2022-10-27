@@ -37,6 +37,8 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * a generic-type Map:  think of what type of keys and values would best suit the requirements
      */
 
+    private final Map<String, Set<U>> friendsMap;
+
     /*
      * [CONSTRUCTORS]
      *
@@ -62,7 +64,8 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *            application
      */
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
-        super(null, null, null, 0);
+        super(name, surname, user, userAge);
+        this.friendsMap = new HashMap<>();
     }
 
     /*
@@ -74,9 +77,19 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *
      * Implements the methods below
      */
+
+    public SocialNetworkUserImpl(final String name, final String surname, final String user) {
+        this(name, surname, user, -1);
+    }
+    
     @Override
     public boolean addFollowedUser(final String circle, final U user) {
-        return false;
+        Set<U> circleFriends = this.friendsMap.get(circle);
+        if (circleFriends == null) {
+            circleFriends = new HashSet<>();
+            this.friendsMap.put(circle, circleFriends);
+        }
+        return circleFriends.add(user);
     }
 
     /**
@@ -86,11 +99,20 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+        final Collection<U> usersInGroup = this.friendsMap.get(groupName);
+        if (usersInGroup != null) {
+            return new ArrayList<>(usersInGroup);
+        }
+        
+        return Collections.emptySet();
     }
 
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        final List<U> followedUsers = new ArrayList<>();
+        for (final Set<U> group : friendsMap.values()) {
+            followedUsers.addAll(group);
+        }
+        return followedUsers;
     }
 }
