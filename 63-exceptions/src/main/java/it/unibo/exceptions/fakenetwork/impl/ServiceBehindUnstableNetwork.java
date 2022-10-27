@@ -3,6 +3,8 @@ package it.unibo.exceptions.fakenetwork.impl;
 import it.unibo.exceptions.arithmetic.ArithmeticService;
 import it.unibo.exceptions.fakenetwork.api.NetworkComponent;
 
+import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +52,7 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
     }
 
     @Override
-    public void sendData(final String data) throws NetworkException {
+    public void sendData(final String data) throws IOException {
         
             /*
              * This method, in this point, should throw an IllegalStateException.
@@ -71,7 +73,7 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
     }
 
     @Override
-    public String receiveResponse() throws NetworkException {
+    public String receiveResponse() throws IOException {
         accessTheNework(null);
         try {
             return new ArithmeticService(Collections.unmodifiableList(commandQueue)).process();
@@ -80,9 +82,9 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
         }
     }
 
-    private void accessTheNework(final String message) throws NetworkException {
+    private void accessTheNework(final String message) throws IOException {
         if (randomGenerator.nextDouble() < failProbability) {
-            throw new NetworkException("Generic I/O error");
+            throw new IOException("Generic I/O error");
         }
     }
 
