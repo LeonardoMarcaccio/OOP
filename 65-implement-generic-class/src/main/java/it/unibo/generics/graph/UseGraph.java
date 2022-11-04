@@ -1,8 +1,10 @@
 package it.unibo.generics.graph;
 
 import it.unibo.generics.graph.api.Graph;
+import it.unibo.generics.graph.impl.GraphImpl;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,7 +24,14 @@ public final class UseGraph {
         /*
          * Test your graph implementation(s) by calling testGraph
          */
-        testGraph(null);
+
+        final List<Graph<String>> graphs = List.of(
+            new GraphImpl<>(false),
+            new GraphImpl<>(false)
+        );
+        for (final var graph: graphs) {
+            testGraph(graph);
+        }
     }
 
     private static void testGraph(final Graph<String> graph) {
